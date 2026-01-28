@@ -2,6 +2,13 @@ import numpy as np
 
 def mat_mul(matrix: list[list[int]], vector: list[int]) -> list[int]:
 
+    if not matrix:
+        raise ValueError("Matrix cannot be empty.")
+
+    colsize = len(matrix[0])
+    if any(len(rows) != colsize for rows in matrix):
+        raise ValueError("All rows must have the same number of columns.")
+
     if len(matrix[0]) != len(vector):
         raise ValueError("Matrix must have the same number of columns as the vector has components.")
 
