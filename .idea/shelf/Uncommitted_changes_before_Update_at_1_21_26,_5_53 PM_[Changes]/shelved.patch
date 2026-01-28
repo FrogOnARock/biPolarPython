@@ -1,0 +1,90 @@
+Index: correlation.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>def mean(xs):\n    total = sum(i for i in xs)\n    return total / len(xs)\n\ndef variance(xs):\n    n = len(xs)\n    mx = mean(xs)\n\n    total = 0.0\n    for i in len(xs):\n        total += (xs[i] - mx)**2\n\n    return total / (n - 1)\n\ndef covariance(xs, ys):\n    if len(xs) != len(ys):\n        raise ValueError(\"length mismatch\")\n\n    n = len(xs)\n    if n < 2:\n        raise ValueError(\"need at least two points\")\n\n    mx = mean(xs)\n    my = mean(ys)\n\n    total = 0.0\n    for i in range(n):\n        dx = xs[i] - mx\n        dy = ys[i] - my\n        total += dx * dy\n\n    return total / (n - 1)\n\ndef correlation(xs, ys):\n\n    return covariance(xs, ys) / (variance(xs) * variance(ys))\n\n\n\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/correlation.py b/correlation.py
+--- a/correlation.py	(revision 7dffeb38239b24c0077ae398b6c240f04997f622)
++++ b/correlation.py	(date 1769035938812)
+@@ -1,3 +1,5 @@
++import math
++
+ def mean(xs):
+     total = sum(i for i in xs)
+     return total / len(xs)
+@@ -7,19 +9,22 @@
+     mx = mean(xs)
+ 
+     total = 0.0
+-    for i in len(xs):
++    for i in range(n):
+         total += (xs[i] - mx)**2
+ 
+     return total / (n - 1)
+ 
+ def covariance(xs, ys):
++
+     if len(xs) != len(ys):
+         raise ValueError("length mismatch")
+ 
+     n = len(xs)
++
+     if n < 2:
+         raise ValueError("need at least two points")
+ 
++
+     mx = mean(xs)
+     my = mean(ys)
+ 
+@@ -33,7 +38,15 @@
+ 
+ def correlation(xs, ys):
+ 
+-    return covariance(xs, ys) / (variance(xs) * variance(ys))
++    epsilon = 1e-15
++    domain_limit = 1e-16
++    denom = math.sqrt(variance(xs) * variance(ys))
++
++    if denom < max(domain_limit, epsilon * denom):
++        return ValueError("Division by zero -> exploding noise")
++
++
++    return covariance(xs, ys) / denom
+ 
+ 
+ 
+Index: .gitignore
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>/.venv\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.gitignore b/.gitignore
+--- a/.gitignore	(revision 7dffeb38239b24c0077ae398b6c240f04997f622)
++++ b/.gitignore	(date 1768355446203)
+@@ -1,1 +1,3 @@
+ /.venv
++.gitignore
++
+Index: l2_norm_newtonian.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>def sqrt_newton(x, tol=1e-8):\n    if x < 0:\n        raise ValueError('x must be non-negative')\n\n    if x == 0:\n        return 0\n\n    s = x\n    while True:\n        next_s = (s + x / s) / 2\n        if abs(next_s - s) < tol:\n            return next_s\n        s = next_s\n\ndef dot(a, b):\n    if len(a) != len(b):\n        raise ValueError('vectors must be same length')\n\n    total = 0\n    for x, y in zip(a, b):\n        total += x * y\n\n    return total\n\ndef l2_norm(a):\n    return sqrt_newton(dot(a, a))\n\ndef cosine_similarity(a, b):\n    denom = l2_norm(a) * l2_norm(b)\n    if denom == 0:\n        raise ValueError(\"Cosine undefined for zero vector\")\n    return dot(a, b)/denom\n\nif __name__ == '__main__':\n    a = [1, 2, 3]\n    b = [4, 5, 6]\n\n    print(cosine_similarity(a,b))
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/l2_norm_newtonian.py b/l2_norm_newtonian.py
+--- a/l2_norm_newtonian.py	(revision 7dffeb38239b24c0077ae398b6c240f04997f622)
++++ b/l2_norm_newtonian.py	(date 1769035657509)
+@@ -31,6 +31,8 @@
+         raise ValueError("Cosine undefined for zero vector")
+     return dot(a, b)/denom
+ 
++
++
+ if __name__ == '__main__':
+     a = [1, 2, 3]
+     b = [4, 5, 6]
