@@ -83,3 +83,15 @@ if __name__ == '__main__':
     print(f"Original vector {ov_1}")
     print(f"Original vector {ov_2}")
 
+    fixed_av = AmbientVector()
+    fixed_av.create_ambient_vector(fixed_vector, basis)
+    fixed_av2 = AmbientVector()
+    fixed_av2.create_ambient_vector(fixed_vector, basis_2)
+
+    print("\n The inverted vectors with a fixed ambient vector and different basis are: \n")
+    print(fixed_av.invert_ambient_vector())
+    print(fixed_av2.invert_ambient_vector())
+
+
+
+
