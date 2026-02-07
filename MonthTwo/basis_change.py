@@ -42,26 +42,44 @@ class AmbientVector:
     def invert_ambient_vector(self):
         return np.dot(np.linalg.inv(self.basis_matrix), self.values)
 
+if __name__ == '__main__':
 
-basis = Basis()
-coord_vector = CoordinateVector()
+    # Instantiate objects
+    basis = Basis()
+    coord_vector = CoordinateVector()
+    basis_2 = Basis()
+    av_1 = AmbientVector()
+    av_2 = AmbientVector()
 
-# create the coordinate vector
-fixed_vector = np.array([1,
+
+    # create the coordinate vector
+    fixed_vector = np.array([1,
                          2])
-coord_vector.create_coord_vector(fixed_vector)
+    coord_vector.create_coord_vector(fixed_vector)
 
 
-# create the basis matrix
-matrix_v = np.array([[1, 2], [-1, 2]])
-basis.create_basis(matrix_v)
-print(coord_vector.values)
-print(basis.matrix)
+    # create the basis matrix
+    matrix_v = np.array([[1, 2], [-1, 2]])
+    basis.create_basis(matrix_v)
+    matrix_v2 = np.array([[3, 5], [-3, 2]])
+    basis_2.create_basis(matrix_v2)
 
-av_1 = AmbientVector()
-av_1.create_ambient_vector(coord_vector.apply_basis(basis), basis)
-print(av_1.values)
+    #show basis matrices as well as coord vector
+    print(f"Vector being transformed: {coord_vector.values} \n")
+    print(f"Basis matrix 1: \n{basis.matrix}")
+    print(f"Basis matrix 2: \n{basis_2.matrix}")
 
-ov_1 = av_1.invert_ambient_vector()
-print(ov_1)
+
+    av_1.create_ambient_vector(coord_vector.apply_basis(basis), basis)
+    av_2.create_ambient_vector(coord_vector.apply_basis(basis_2), basis_2)
+
+    print("\n The vectors in ambient space are: \n")
+    print(f"The vector in ambient space is: {av_1.values}")
+    print(f"The vector in ambient space 2 is {av_2.values}")
+
+    ov_1 = av_1.invert_ambient_vector()
+    ov_2 = av_2.invert_ambient_vector()
+    print("\n The inverted vectors are below: \n")
+    print(f"Original vector {ov_1}")
+    print(f"Original vector {ov_2}")
 
